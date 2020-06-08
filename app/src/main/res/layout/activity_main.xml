@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    tools:context=".MainActivity">
+
+    <include
+        android:id="@+id/toolbar_group"
+        layout="@layout/toolbar_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:fillViewport="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_group">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="40dp"
+                android:fontFamily="@font/black_ops_one"
+                android:text="@string/app_name"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="40sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/menu_button_info"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/rounded_button"
+                android:fontFamily="monospace"
+                android:paddingLeft="60dp"
+                android:paddingTop="50dp"
+                android:paddingRight="60dp"
+                android:paddingBottom="50dp"
+                android:text="@string/menu_button_info"
+                android:textColor="@color/cmd_green"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@id/labelForScrollMore"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                app:layout_constraintVertical_bias="0.131" />
+
+            <TextView
+                android:id="@+id/labelForScrollMore"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/label_for_scroll_more"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toTopOf="@id/menu_unified_native_ad_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menu_button_info" />
+
+            <include
+                android:id="@+id/menu_unified_native_ad_view"
+                layout="@layout/unified_native_ad_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:paddingLeft="60dp"
+                android:paddingTop="50dp"
+                android:paddingRight="60dp"
+                android:paddingBottom="50dp"
+                app:layout_constraintBottom_toTopOf="@+id/menu_button_encrypt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelForScrollMore" />
+
+            <Button
+                android:id="@+id/menu_button_encrypt"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/rounded_button"
+                android:fontFamily="monospace"
+                android:paddingLeft="60dp"
+                android:paddingTop="50dp"
+                android:paddingRight="60dp"
+                android:paddingBottom="50dp"
+                android:text="@string/menu_button_encrypt"
+                android:textColor="@color/cmd_green"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@id/menu_button_decrypt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/menu_unified_native_ad_view"
+                app:layout_constraintVertical_bias="0.131" />
+
+            <Button
+                android:id="@+id/menu_button_decrypt"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="65dp"
+                android:background="@drawable/rounded_button"
+                android:fontFamily="monospace"
+                android:paddingLeft="60dp"
+                android:paddingTop="50dp"
+                android:paddingRight="60dp"
+                android:paddingBottom="50dp"
+                android:text="@string/menu_button_decrypt"
+                android:textColor="@color/cmd_green"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/menu_button_encrypt"
+                app:layout_constraintVertical_bias="1.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

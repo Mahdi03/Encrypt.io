@@ -1,0 +1,47 @@
+# built application files
+*.apk
+
+app/google-services.json
+app/release/*
+build.gradle
+gradle.properties
+gradle/
+gradlew
+gradlew.bat
+settings.gradle
+
+.ap_
+# files for dex VM
+*.dex
+# Java class files
+*.class
+# generated files
+bin/
+gen/
+# icon creation files
+newIcon/
+# windows thumbnail db
+Thumbs.db
+
+*.iml
+.idea
+.navigation
+output.json
+# NDK
+obj/
+.externalNativeBuild
+
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+src/google-services.json

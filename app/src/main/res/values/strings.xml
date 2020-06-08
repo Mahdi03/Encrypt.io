@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">Encrypt.io</string>
+    <!--Menu page-->
+    <string name="main_menu_name">Menu</string>
+    <string name="menu_button_info">More Info</string>
+    <string name="label_for_scroll_more">Scroll Below For More Options:</string>
+    <string name="menu_button_encrypt">Encrypt Some Text</string>
+    <string name="menu_button_decrypt">Decrypt Encrypted Values</string>
+    <!--Info Page-->
+    <string name="info_title_name">More Info</string>
+    <string name="listOfEncryptionMethods1">
+        <b>Encryption Methods:</b>
+        \n\n<li><u>Binary:</u> This converts all of your letters into binary numbers (simply 1\'s and 0\'s).</li>
+        \n\n<li><u>Base-64:</u> This converts your text into a more concise readable format for computers more efficient to transport large sums of data.</li>
+    </string>
+    <string name="listOfEncryptionMethods2">
+        \n\n<li><u>Hexadecimal:</u> This converts your text into numbers of base 16 (ranging from 0 to f).</li>
+        \n\n<li><u>MD5:</u> This takes your text and converts it into a more secure format that cannot be decrypted back, it is used to store passwords in some places.</li>
+        \n\n<li><u>Octal:</u> This converts your text into numbers of base 8 (ranging from 0 to 7).</li>
+        \n\n<li><u>ROT13:</u> This converts your text by transforming each letter 13 characters forward/backward in the alphabet, although it seems simple, it is great for simple encryption needs.</li>
+        \n\n<li><u>Unicode:</u> This converts your text into their Unicode values (an agreed upon number format of the alphabet and other symbols and characters as well).</li>
+    </string>
+    <!--Encrypt page-->
+    <string name="encrypt_title_name">Encrypt</string>
+    <string-array name="encrypt_method_choices">
+        <item>Select an encryption method</item>
+        <item>Binary</item>
+        <item>Base-64</item>
+        <item>Hexadecimal</item>
+        <item>MD5</item>
+        <item>Octal</item>
+        <item>ROT13</item>
+        <item>Unicode</item>
+    </string-array>
+    <string name="encrypt_button">Encrypt!!!</string>
+    <string name="edit_text_placeholder">Start Typing&#8230;</string>
+    <!--Decrypt page-->
+    <string name="decrypt_title_name">Decrypt</string>
+    <string-array name="decrypt_method_choices">
+        <item>Select a decryption method</item>
+        <item>Binary</item>
+        <item>Base-64</item>
+        <item>Hexadecimal</item>
+        <item>Octal</item>
+        <item>ROT13</item>
+        <item>Unicode</item>
+    </string-array>
+    <string name="decrypt_button">Decrypt!!!</string>
+    <!--Shared strings-->
+    <string name="copy_button">Copy</string>
+    <string name="label_for_output_text">Output shows up here:</string>
+</resources>
