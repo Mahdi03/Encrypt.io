@@ -16,12 +16,16 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MediaContent;
 import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.android.gms.ads.formats.MediaView;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
+//import com.google.android.gms.ads.formats.UnifiedNativeAd;
+//import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 
 public class MainActivity extends AppCompatActivity {
     Button menu_button_info;
@@ -29,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     Button menu_button_decrypt;
     //AdView menu_ad_view;
 
-    private UnifiedNativeAd nativeAd;
+    private NativeAd myNativeAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,32 +54,7 @@ public class MainActivity extends AppCompatActivity {
         menu_button_decrypt = findViewById(R.id.menu_button_decrypt);
 
         //menu_ad_view = (AdView) findViewById(R.id.menu_ad_view);
-        // AdMob Native Advanced Test ID: ca-app-pub-3940256099942544/2247696110
-        // AdMob Native Advanced Video Test ID: ca-app-pub-3940256099942544/1044960115
-        //AdMob Menu Ad ID: ca-app-pub-8495483038077603/7297598685
-        AdLoader.Builder builder = new AdLoader.Builder(this, "ca-app-pub-8495483038077603/7297598685"); //AdMob ID Goes Here For Native Ad
-        builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-            @Override
-            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                //Show the actual ad
-                if (isDestroyed()) {
-                    unifiedNativeAd.destroy();
-                    return;
-                }
-                // You must call destroy on old ads when you are done with them,
-                // otherwise you will have a memory leak.
-                if (nativeAd != null) {
-                    nativeAd.destroy();
-                }
-                nativeAd = unifiedNativeAd;
-                //Show the actual ad
-                FrameLayout frameLayout = findViewById(R.id.menu_unified_native_ad_view);
-                UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater().inflate(R.layout.unified_native_ad_view, null);
-                populateUnifiedNativeAdView(unifiedNativeAd, adView);
-                frameLayout.removeAllViews();
-                frameLayout.addView(adView);
-            }
-        });
+
         VideoOptions videoOptions = new VideoOptions.Builder()
                 .setStartMuted(false)
                 .build();
@@ -84,10 +63,36 @@ public class MainActivity extends AppCompatActivity {
                 .setVideoOptions(videoOptions)
                 .build();
 
-        builder.withNativeAdOptions(adOptions);
-        AdLoader adLoader = builder.withAdListener(new AdListener() {
+        // AdMob Native Advanced Test ID: ca-app-pub-3940256099942544/2247696110
+        // AdMob Native Advanced Video Test ID: ca-app-pub-3940256099942544/1044960115
+        //AdMob Menu Ad ID: ca-app-pub-8495483038077603/7297598685
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-8495483038077603/7297598685")
+        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
             @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                //Show the actual ad
+                if (isDestroyed()) {
+                    nativeAd.destroy();
+                    return;
+                }
+                // You must call destroy on old ads when you are done with them,
+                // otherwise you will have a memory leak.
+                if (nativeAd != null) {
+                    nativeAd.destroy();
+                }
+                myNativeAd = nativeAd;
+                //Show the actual ad
+                FrameLayout frameLayout = findViewById(R.id.menu_unified_native_ad_view);
+                NativeAdView adView = (NativeAdView) getLayoutInflater().inflate(R.layout.unified_native_ad_view, null);
+                populateNativeAdView(nativeAd, adView);
+                frameLayout.removeAllViews();
+                frameLayout.addView(adView);
+            }
+        })
+        .withNativeAdOptions(adOptions)
+        .withAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(LoadAdError errorCode) {
                 Toast.makeText(MainActivity.this, "Failed to load native ad: "
                         + errorCode, Toast.LENGTH_SHORT).show();
             }
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
+    private void populateNativeAdView(NativeAd nativeAd, NativeAdView adView) {
         // Set the media view.
         adView.setMediaView((MediaView) adView.findViewById(R.id.ad_media));
 
@@ -197,14 +202,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the video controller for the ad. One will always be provided, even if the ad doesn't
         // have a video asset.
-        VideoController vc = nativeAd.getVideoController();
+        MediaContent adMediaContent = nativeAd.getMediaContent();
 
         // Updates the UI to say whether or not this ad has a video asset.
-        if (vc.hasVideoContent()) {
+        if (adMediaContent.hasVideoContent()) {
             // Create a new VideoLifecycleCallbacks object and pass it to the VideoController. The
             // VideoController will call methods on this object when events occur in the video
             // lifecycle.
-            vc.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
+            adMediaContent.getVideoController().setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
                 @Override
                 public void onVideoEnd() {
                     // Publishers should allow native ads to complete video playback before
@@ -218,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (nativeAd != null) {
-            nativeAd.destroy();
+        if (myNativeAd != null) {
+            myNativeAd.destroy();
         }
         super.onDestroy();
     }

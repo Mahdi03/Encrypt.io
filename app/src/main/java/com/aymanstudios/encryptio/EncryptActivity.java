@@ -3,6 +3,7 @@ package com.aymanstudios.encryptio;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,12 +23,16 @@ import androidx.core.widget.NestedScrollView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MediaContent;
 import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.android.gms.ads.formats.MediaView;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
+//import com.google.android.gms.ads.formats.UnifiedNativeAd;
+//import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -44,7 +49,7 @@ public class EncryptActivity extends AppCompatActivity {
     EditText outputTextEncrypt;
     Button copyButton;
     int k = 0;
-    private UnifiedNativeAd nativeAd;
+    private NativeAd myNativeAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,32 +69,6 @@ public class EncryptActivity extends AppCompatActivity {
         outputTextEncrypt = findViewById(R.id.outputTextEncrypt);
         copyButton = findViewById(R.id.copyButton);
 
-        // AdMob Native Advanced Test ID: ca-app-pub-3940256099942544/2247696110
-        // AdMob Native Advanced Video Test ID: ca-app-pub-3940256099942544/1044960115
-        // AdMob Encrypt Ad ID: ca-app-pub-8495483038077603/1853700314
-        AdLoader.Builder builder = new AdLoader.Builder(this, "ca-app-pub-8495483038077603/1853700314"); //AdMob ID Goes Here For Native Ad
-        builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-            @Override
-            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                //Show the actual ad
-                if (isDestroyed()) {
-                    unifiedNativeAd.destroy();
-                    return;
-                }
-                // You must call destroy on old ads when you are done with them,
-                // otherwise you will have a memory leak.
-                if (nativeAd != null) {
-                    nativeAd.destroy();
-                }
-                nativeAd = unifiedNativeAd;
-                //Show the actual ad
-                FrameLayout frameLayout = findViewById(R.id.menu_unified_native_ad_view);
-                UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater().inflate(R.layout.unified_native_ad_view, null);
-                populateUnifiedNativeAdView(unifiedNativeAd, adView);
-                frameLayout.removeAllViews();
-                frameLayout.addView(adView);
-            }
-        });
         VideoOptions videoOptions = new VideoOptions.Builder()
                 .setStartMuted(false)
                 .build();
@@ -98,12 +77,39 @@ public class EncryptActivity extends AppCompatActivity {
                 .setVideoOptions(videoOptions)
                 .build();
 
-        builder.withNativeAdOptions(adOptions);
-        AdLoader adLoader = builder.withAdListener(new AdListener() {
+        // AdMob Native Advanced Test ID: ca-app-pub-3940256099942544/2247696110
+        // AdMob Native Advanced Video Test ID: ca-app-pub-3940256099942544/1044960115
+        // AdMob Encrypt Ad ID: ca-app-pub-8495483038077603/1853700314
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-8495483038077603/1853700314")
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        //Show the actual ad
+                        if (isDestroyed()) {
+                            nativeAd.destroy();
+                            return;
+                        }
+                        // You must call destroy on old ads when you are done with them,
+                        // otherwise you will have a memory leak.
+                        if (nativeAd != null) {
+                            nativeAd.destroy();
+                        }
+                        myNativeAd = nativeAd;
+                        //Show the actual ad
+                        FrameLayout frameLayout = findViewById(R.id.menu_unified_native_ad_view);
+                        NativeAdView adView = (NativeAdView) getLayoutInflater().inflate(R.layout.unified_native_ad_view, null);
+                        populateNativeAdView(nativeAd, adView);
+                        frameLayout.removeAllViews();
+                        frameLayout.addView(adView);
+                    }
+                })
+        .withNativeAdOptions(adOptions)
+        .withAdListener(new AdListener() {
             @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onAdFailedToLoad(LoadAdError errorCode) {
                 Toast.makeText(EncryptActivity.this, "Failed to load native ad: "
                         + errorCode, Toast.LENGTH_SHORT).show();
+                Log.e("Ad error", String.valueOf(errorCode));
             }
         }).build();
 
@@ -263,7 +269,7 @@ public class EncryptActivity extends AppCompatActivity {
     }
 
     //Google's repo code for Native ads
-    private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
+    private void populateNativeAdView(NativeAd nativeAd, NativeAdView adView) {
         // Set the media view.
         adView.setMediaView((MediaView) adView.findViewById(R.id.ad_media));
 
@@ -340,14 +346,14 @@ public class EncryptActivity extends AppCompatActivity {
 
         // Get the video controller for the ad. One will always be provided, even if the ad doesn't
         // have a video asset.
-        VideoController vc = nativeAd.getVideoController();
+        MediaContent adMediaContent = nativeAd.getMediaContent();
 
         // Updates the UI to say whether or not this ad has a video asset.
-        if (vc.hasVideoContent()) {
+        if (adMediaContent.hasVideoContent()) {
             // Create a new VideoLifecycleCallbacks object and pass it to the VideoController. The
             // VideoController will call methods on this object when events occur in the video
             // lifecycle.
-            vc.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
+            adMediaContent.getVideoController().setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
                 @Override
                 public void onVideoEnd() {
                     // Publishers should allow native ads to complete video playback before
@@ -361,8 +367,8 @@ public class EncryptActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (nativeAd != null) {
-            nativeAd.destroy();
+        if (myNativeAd != null) {
+            myNativeAd.destroy();
         }
         super.onDestroy();
     }
