@@ -27,11 +27,8 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MediaContent;
 import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.android.gms.ads.nativead.MediaView;
-import com.google.android.gms.ads.nativead.NativeAdOptions;
-//import com.google.android.gms.ads.formats.UnifiedNativeAd;
-//import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
 import java.util.Base64;
@@ -150,7 +147,7 @@ public class DecryptActivity extends AppCompatActivity {
                     clipboardManager.setPrimaryClip(clip);
                     Toast.makeText(DecryptActivity.this, "Successfully copied to clipboard!!!", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
-                    Toast.makeText(DecryptActivity.this, "Sorry but your text could not be copied at this time" + e.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(DecryptActivity.this, "Sorry but your text could not be copied at this time" + e, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -198,47 +195,53 @@ public class DecryptActivity extends AppCompatActivity {
         boolean success = true;
         try {
             //Binary
-            if (decryptionMethod.equals("Binary")) {
-                String[] stringArr = input.split(" ");
-                for (int i = 0; i < stringArr.length; i++) {
-                    output.append((char) Integer.parseInt(stringArr[i], 2));
-                }
-                success = true;
-            }
-            //Base-64
-            else if (decryptionMethod.equals("Base-64")) {
-                output.append(new String(Base64.getDecoder().decode(input)));
-                success = true;
-            }
-            //Hexadecimal
-            else if (decryptionMethod.equals("Hexadecimal")) {
-                String[] stringArr = input.split(" ");
-                for (int i = 0; i < stringArr.length; i++) {
-                    output.append((char) Integer.parseInt(stringArr[i], 16));
+            switch (decryptionMethod) {
+                case "Binary": {
+                    String[] stringArr = input.split(" ");
+                    for (String s : stringArr) {
+                        output.append((char) Integer.parseInt(s, 2));
+                    }
                     success = true;
+                    break;
                 }
-            }
-            //Octal
-            else if (decryptionMethod.equals("Octal")) {
-                String[] stringArr = input.split(" ");
-                for (int i = 0; i < stringArr.length; i++) {
-                    output.append((char) Integer.parseInt(stringArr[i], 8));
+                //Base-64
+                case "Base-64":
+                    output.append(new String(Base64.getDecoder().decode(input)));
+                    success = true;
+                    break;
+                //Hexadecimal
+                case "Hexadecimal": {
+                    String[] stringArr = input.split(" ");
+                    for (String s : stringArr) {
+                        output.append((char) Integer.parseInt(s, 16));
+                        success = true;
+                    }
+                    break;
                 }
-                success = true;
-            }
-            //ROT13
-            else if (decryptionMethod.equals("ROT13")) {
-                output.append(toROT13(input));
-                success = true;
-            }
-            //Unicode
-            else if (decryptionMethod.equals("Unicode")) {
-                String[] stringArr = input.split(" ");
-                for (int i = 0; i < stringArr.length; i++) {
-                    output.append((char) Integer.parseInt(stringArr[i]));
+                //Octal
+                case "Octal": {
+                    String[] stringArr = input.split(" ");
+                    for (String s : stringArr) {
+                        output.append((char) Integer.parseInt(s, 8));
+                    }
+                    success = true;
+                    break;
                 }
-                success = true;
+                //ROT13
+                case "ROT13":
+                    output.append(toROT13(input));
+                    success = true;
+                    break;
+                //Unicode
+                case "Unicode": {
+                    String[] stringArr = input.split(" ");
+                    for (String s : stringArr) {
+                        output.append((char) Integer.parseInt(s));
+                    }
+                    success = true;
 
+                    break;
+                }
             }
         } catch (Exception e) {
             Toast.makeText(DecryptActivity.this, "Try using a correct format before continuing", Toast.LENGTH_LONG).show();
@@ -274,7 +277,7 @@ public class DecryptActivity extends AppCompatActivity {
     //Google's repo code for Native ads
     private void populateNativeAdView(NativeAd nativeAd, NativeAdView adView) {
         // Set the media view.
-        adView.setMediaView((MediaView) adView.findViewById(R.id.ad_media));
+        adView.setMediaView(adView.findViewById(R.id.ad_media));
 
         // Set other ad assets.
         adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
